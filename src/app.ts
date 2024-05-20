@@ -1,3 +1,28 @@
 import express from 'express';
+import 'express-async-errors';
+import { json } from 'body-parser';
+import cookieSession from 'cookie-session';
 
-export const app = express();
+import { NotFoundError, errorHandler, currentUser } from '@gmvticketing/common';
+
+const app = express();
+
+app.set('trust proxy', true);
+
+app.use(json());
+app.use(
+  cookieSession({
+    signed: false,
+    secure: process.env.NODE_ENV !== 'test',
+    httpOnly: true
+  })
+)
+app.use(currentUser);
+
+app.all('*', () => {
+  throw new NotFoundError();
+})
+
+app.use(errorHandler);
+
+export { app }
