@@ -1,6 +1,6 @@
 import { app } from './src/app';
 
-app.get('/', (req, res) => {
+app.get('/api/tickets', (req, res) => {
   res.send('Hello world!');
 })
 
