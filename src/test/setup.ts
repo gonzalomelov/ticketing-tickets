@@ -1,11 +1,14 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
+import { Request } from 'express';
+
+import { generateJwt } from '@gmvticketing/common';
 
 import { app } from '../app';
 
 declare global {
-  var signup: () => Promise<string>;
+  var signin: () => string[];
 }
 
 let mongo: MongoMemoryServer;
@@ -34,19 +37,20 @@ afterAll(async () => {
   await mongoose.connection.close();
 })
 
-global.signup = async () => {
-  const email = 'test@test.com';
-  const password = 'password';
-
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send({
-      email,
-      password
-    })
-    .expect(201);
+global.signin = () => {
+  const user = {
+    id: '1',
+    email: 'test@test.com'
+  }
   
-  const cookie = response.header['set-cookie'];
+  const jwt = generateJwt({
+    id: user.id,
+    email: user.email,
+  });
 
-  return cookie;
+  const session = { jwt };
+
+  const base64 = Buffer.from(JSON.stringify(session)).toString('base64');
+
+  return [`session=${base64}`];
 }

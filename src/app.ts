@@ -5,6 +5,8 @@ import cookieSession from 'cookie-session';
 
 import { NotFoundError, errorHandler, currentUser } from '@gmvticketing/common';
 
+import { createTicketRoute } from './routes/new';
+
 const app = express();
 
 app.set('trust proxy', true);
@@ -18,6 +20,7 @@ app.use(
   })
 )
 app.use(currentUser);
+app.use(createTicketRoute);
 
 app.all('*', () => {
   throw new NotFoundError();
