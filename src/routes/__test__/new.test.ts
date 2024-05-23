@@ -22,3 +22,18 @@ it('returns a status other than 401 if the user is signed in', async () => {
 
   expect(response.status).not.toEqual(401);
 })
+
+it('returns an error if an invalid title is provided', async () => {
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: '',
+      price: 10
+    })
+    .expect(400);
+
+  expect(response.body).toStrictEqual({"errors": [{"field": "title", "message": "Title is required"}]});
+})
