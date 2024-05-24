@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { body} from 'express-validator';
 
-import { RequestValidationError, requireAuth, validateRequest } from '@gmvticketing/common';
+import { requireAuth, validateRequest } from '@gmvticketing/common';
 
 const router = Router();
 
@@ -10,8 +10,8 @@ const validateInputs = validateRequest([
     .notEmpty()
     .withMessage('Title is required'),
   body('price')
-    .notEmpty()
-    .withMessage('Title is required')
+    .isFloat({ gt: 0 })
+    .withMessage('Price must be greater than 0')
 ])
 
 const createTicketRouteHandler = (req: Request, res: Response) => {

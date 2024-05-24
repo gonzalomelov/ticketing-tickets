@@ -37,3 +37,18 @@ it('returns an error if an invalid title is provided', async () => {
 
   expect(response.body).toStrictEqual({"errors": [{"field": "title", "message": "Title is required"}]});
 })
+
+it('returns an error if an invalid price is provided', async () => {
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'Ticket 1',
+      price: -10
+    })
+    .expect(400);
+
+  expect(response.body).toStrictEqual({"errors": [{"field": "price", "message": "Price must be greater than 0"}]});
+})
