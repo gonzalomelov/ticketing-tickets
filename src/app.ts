@@ -5,6 +5,7 @@ import cookieSession from 'cookie-session';
 
 import { NotFoundError, errorHandler, currentUser } from '@gmvticketing/common';
 
+import { getTicketRoute } from './routes/show';
 import { createTicketRoute } from './routes/new';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(
   })
 )
 app.use(currentUser);
+app.use(getTicketRoute);
 app.use(createTicketRoute);
 
 app.all('*', () => {
